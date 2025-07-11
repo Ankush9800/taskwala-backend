@@ -4,7 +4,7 @@ import { Submission } from "../models/submission.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/apiresponse.js";
 import { response } from "express";
-import { Hiqmobi } from "../models/Hiqmobi.model.js";
+import {Hiqmobi} from "../models/hiqmobi.model.js"
 
 const newCampaign = asyncHandler(async(req, res)=>{
     const {title, payoutRate, trackingUrl, description, stepsToFollow} = req.body
