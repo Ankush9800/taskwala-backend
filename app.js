@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 const app = express()
 
 app.use(cors({
-    origin: ["http://localhost:5173", "https://hellome.site", "https://taskwala.netlify.app",'https://www.hellome.site'],
+    origin: ["http://localhost:5173", "https://task.hellome.site", "https://taskwala.netlify.app",'https://www.hellome.site'],
     credentials: true
 }))
 
