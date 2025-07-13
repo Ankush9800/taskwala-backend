@@ -13,6 +13,6 @@ router.route("/updatecampstatus/:id").post(updateCampaignState)
 router.route("/getcampaignbyid/:id").get(getCampaignBiId)
 router.route("/getallsubmission").get(getAllSubmission)
 router.route("/gethiqmobidata").get(getHiqmobiConversion)
-router.route("/postback").post(hiqmobiPostBackUrl)
+router.route("/postback").get(hiqmobiPostBackUrl)
 
 export default router
