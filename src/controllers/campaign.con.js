@@ -202,8 +202,8 @@ const getHiqmobiConversion = asyncHandler(async(req, res)=>{
 })
 
 const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
-    // console.log("Postback received:", req.query);
-    const {clickid, campid, p1, p2, p3} = req.query
+    
+    const {clickid, campid, p1, p2, p3, payout} = req.query
     // if ([click_id, camp_id, p1, p2, p3].some(field => field?.toString().trim() === "")) {
     // return res.status(400).json(new ApiResponse(400, null, "Required fields are missing"));
     // }
@@ -213,7 +213,8 @@ const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
         campId : campid,
         phoneNo : p1,
         upiId : p2,
-        cName : p3
+        cName : p3,
+        payout : payout
     })
 
     const createdConversion =await Hiqmobi.findById(conversion._id)

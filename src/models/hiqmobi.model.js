@@ -16,6 +16,9 @@ const hiqmobiSchema = new Schema({
     cName:{
         type : String,
     },
+    payout:{
+        type : Number
+    }
 },{timestamps : true})
 
 export const Hiqmobi = mongoose.model("Hiqmobi", hiqmobiSchema)
