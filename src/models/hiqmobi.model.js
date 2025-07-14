@@ -18,7 +18,10 @@ const hiqmobiSchema = new Schema({
     },
     payout:{
         type : Number
-    }
+    },
+    goal:{
+        type : String
+    },
 },{timestamps : true})
 
 export const Hiqmobi = mongoose.model("Hiqmobi", hiqmobiSchema)

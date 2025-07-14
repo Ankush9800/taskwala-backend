@@ -203,7 +203,7 @@ const getHiqmobiConversion = asyncHandler(async(req, res)=>{
 
 const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
     
-    const {clickid, campid, p1, p2, p3, payout} = req.query
+    const {clickid, campid, p1, p2, p3, payout, goal} = req.query
     // if ([click_id, camp_id, p1, p2, p3].some(field => field?.toString().trim() === "")) {
     // return res.status(400).json(new ApiResponse(400, null, "Required fields are missing"));
     // }
@@ -214,7 +214,8 @@ const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
         phoneNo : p1,
         upiId : p2,
         cName : p3,
-        payout : payout
+        payout : payout,
+        goal
     })
 
     const createdConversion =await Hiqmobi.findById(conversion._id)
@@ -234,13 +235,18 @@ const getHiqmobiPostback = asyncHandler(async(req, res)=>{
 
 const getHiqmobiUserPostback = asyncHandler(async(req, res)=>{
 
-    const phone = req.query.phone
+    const {phone, campId} = req.query
 
-    if (!phone) {
+    if (!(phone && campId)) {
     return res.status(400).json(new ApiResponse(400, null, "Phone number is required"));
     }
 
-    const postback = await Hiqmobi.findOne({phoneNo : phone})
+    const postback = await Hiqmobi.find({phoneNo : phone, campId})
+
+    if (!postback) {
+    return res.status(400).json(new ApiResponse(400, null, "No data found"));
+    }
+
     return res.status(200).json(new ApiResponse(200,postback,"Successfully recovered postback"))
 })
 
