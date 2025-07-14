@@ -232,5 +232,13 @@ const getHiqmobiPostback = asyncHandler(async(req, res)=>{
     return res.status(200).json(new ApiResponse(200,postback,"Successfully recovered all postback"))
 })
 
+const getHiqmobiUserPostback = asyncHandler(async(req, res)=>{
+
+    const phone = req.params.phone
+
+    const postback = await Hiqmobi.findOne({phoneNo : phone})
+    return res.status(200).json(new ApiResponse(200,postback,"Successfully recovered postback"))
+})
+
     
-export {newCampaign, updateCampaign, getallcampaign, submitCampaign, deleteCampaign, updateCampaignState, getCampaignBiId, getAllSubmission, getHiqmobiConversion, hiqmobiPostBackUrl, getHiqmobiPostback}
+export {newCampaign, updateCampaign, getallcampaign, submitCampaign, deleteCampaign, updateCampaignState, getCampaignBiId, getAllSubmission, getHiqmobiConversion, hiqmobiPostBackUrl, getHiqmobiPostback, getHiqmobiUserPostback}
