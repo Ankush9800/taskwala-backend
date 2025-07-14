@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asynchandler.js";
 import { Admin } from "../models/admin.model.js";
 import { ApiResponse } from "../utils/apiresponse.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 
 const generateAccessAndRefreshToken = async(adminId)=>{
@@ -20,6 +21,7 @@ const generateAccessAndRefreshToken = async(adminId)=>{
 }
 
 const registerAdmin = asyncHandler(async(req, res)=>{
+    
     const {fullName, userName, email, phoneNo, password} = req.body
 
     if ([fullName, userName, email, phoneNo, password].some(field => field?.toString().trim() === "")) {
@@ -34,12 +36,17 @@ const registerAdmin = asyncHandler(async(req, res)=>{
         return res.status(409).json(new ApiResponse(409, null, "admin already exists")); 
     }
 
+    const avatarpath = req.file?.path
+
+    const avatarImage = await uploadOnCloudinary(avatarpath)
+
     const admin = await Admin.create({
         fullName,
         email,
         phoneNo,
         userName,
-        password
+        password,
+        avatar : avatarImage?.url
     })
 
     const createdAdmin = await Admin.findById(admin._id).select("-password -refreshToken")
