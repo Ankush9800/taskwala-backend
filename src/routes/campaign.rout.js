@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {deleteCampaign, getallcampaign, getAllSubmission, getCampaignBiId, getHiqmobiConversion, hiqmobiPostBackUrl, newCampaign, submitCampaign, updateCampaign, updateCampaignState } from "../controllers/campaign.con.js";
+import {deleteCampaign, getallcampaign, getAllSubmission, getCampaignBiId, getHiqmobiConversion, getHiqmobiPostback, hiqmobiPostBackUrl, newCampaign, submitCampaign, updateCampaign, updateCampaignState } from "../controllers/campaign.con.js";
 import {upload} from "../middleware/multer.middleware.js"
 
 const router = Router()
@@ -14,5 +14,6 @@ router.route("/getcampaignbyid/:id").get(getCampaignBiId)
 router.route("/getallsubmission").get(getAllSubmission)
 router.route("/gethiqmobidata").get(getHiqmobiConversion)
 router.route("/postback").get(hiqmobiPostBackUrl)
+router.route("/getpostback").get(getHiqmobiPostback)
 
 export default router

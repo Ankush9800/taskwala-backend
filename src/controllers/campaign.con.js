@@ -227,5 +227,10 @@ const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
     return res.status(200).json(new ApiResponse(200,createdConversion,"Successfully recovered conversion"))
 })
 
+const getHiqmobiPostback = asyncHandler(async(req, res)=>{
+    const postback = await Hiqmobi.find()
+    return res.status(200).json(new ApiResponse(200,postback,"Successfully recovered all postback"))
+})
+
     
-export {newCampaign, updateCampaign, getallcampaign, submitCampaign, deleteCampaign, updateCampaignState, getCampaignBiId, getAllSubmission, getHiqmobiConversion, hiqmobiPostBackUrl}
+export {newCampaign, updateCampaign, getallcampaign, submitCampaign, deleteCampaign, updateCampaignState, getCampaignBiId, getAllSubmission, getHiqmobiConversion, hiqmobiPostBackUrl, getHiqmobiPostback}
