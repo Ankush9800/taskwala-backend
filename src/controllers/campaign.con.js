@@ -234,7 +234,11 @@ const getHiqmobiPostback = asyncHandler(async(req, res)=>{
 
 const getHiqmobiUserPostback = asyncHandler(async(req, res)=>{
 
-    const phone = req.params.phone
+    const phone = req.query.phone
+
+    if (!phone) {
+    return res.status(400).json(new ApiResponse(400, null, "Phone number is required"));
+    }
 
     const postback = await Hiqmobi.findOne({phoneNo : phone})
     return res.status(200).json(new ApiResponse(200,postback,"Successfully recovered postback"))
