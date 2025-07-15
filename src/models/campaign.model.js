@@ -10,6 +10,9 @@ const campaignSchema = new Schema(
       type: Number,
       required: true,
     },
+    campId:{
+      type : String,
+    },
     trackingUrl: {
       type: String,
       required: true,

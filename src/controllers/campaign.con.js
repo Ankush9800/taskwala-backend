@@ -235,13 +235,13 @@ const getHiqmobiPostback = asyncHandler(async(req, res)=>{
 
 const getHiqmobiUserPostback = asyncHandler(async(req, res)=>{
 
-    const {phone, campId} = req.query
+    const {upiid, campid} = req.query
 
-    if (!(phone && campId)) {
+    if (!(upiid && campid)) {
     return res.status(400).json(new ApiResponse(400, null, "Phone number is required"));
     }
 
-    const postback = await Hiqmobi.find({phoneNo : phone, campId})
+    const postback = await Hiqmobi.find({upiId : upiid, campId :campid})
 
     if (!postback) {
     return res.status(400).json(new ApiResponse(400, null, "No data found"));
@@ -250,5 +250,10 @@ const getHiqmobiUserPostback = asyncHandler(async(req, res)=>{
     return res.status(200).json(new ApiResponse(200,postback,"Successfully recovered postback"))
 })
 
+const getActiveCampaigns = asyncHandler(async(req, res)=>{
+    const campaigns = await Campaign.find({campaignStatus : true})
+    res.status(200).json(campaigns)
+})
+
     
-export {newCampaign, updateCampaign, getallcampaign, submitCampaign, deleteCampaign, updateCampaignState, getCampaignBiId, getAllSubmission, getHiqmobiConversion, hiqmobiPostBackUrl, getHiqmobiPostback, getHiqmobiUserPostback}
+export {newCampaign, updateCampaign, getallcampaign, submitCampaign, deleteCampaign, updateCampaignState, getCampaignBiId, getAllSubmission, getHiqmobiConversion, hiqmobiPostBackUrl, getHiqmobiPostback, getHiqmobiUserPostback, getActiveCampaigns}
