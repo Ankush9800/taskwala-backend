@@ -4,7 +4,7 @@ import { Submission } from "../models/submission.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/apiresponse.js";
 import { response } from "express";
-import {Hiqmobi} from "../models/hiqmobi.model.js"
+import { Hiqmobi } from "../models/hiqmobi.model.js";
 
 const newCampaign = asyncHandler(async(req, res)=>{
     const {title, payoutRate, trackingUrl, description, stepsToFollow} = req.body
@@ -182,8 +182,13 @@ const deleteCampaign = asyncHandler(async(req, res)=>{
 })
 
 const getAllSubmission = asyncHandler(async(req, res)=>{
-    const submission = await Submission.find()
-    return res.status(200).json(new ApiResponse(200,submission,"Successfully recovered all submission"))
+
+    const pageLimit = 10
+    const page = parseInt(req.query.page) || 1
+    const skip = (page -1)*pageLimit
+
+    const [submission, totalCount] = await Promise.all([Submission.find().sort({createdAt : -1}).limit(pageLimit).skip(skip), Submission.countDocuments()])
+    return res.status(200).json(new ApiResponse(200,[submission, totalCount],"Successfully recovered all submission"))
 })
 
 const getHiqmobiConversion = asyncHandler(async(req, res)=>{
@@ -229,8 +234,12 @@ const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
 })
 
 const getHiqmobiPostback = asyncHandler(async(req, res)=>{
-    const postback = await Hiqmobi.find()
-    return res.status(200).json(new ApiResponse(200,postback,"Successfully recovered all postback"))
+
+    const pageLimit = 10
+    const page = req.query.page
+    const skip = (page-1)* pageLimit
+    const [postback, totalCount] = await Promise.all([Hiqmobi.find().sort({createdAt : -1}).limit(pageLimit).skip(skip), Hiqmobi.countDocuments()])
+    return res.status(200).json(new ApiResponse(200,[postback, totalCount],"Successfully recovered all postback"))
 })
 
 const getHiqmobiUserPostback = asyncHandler(async(req, res)=>{
