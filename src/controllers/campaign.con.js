@@ -1,15 +1,15 @@
 import { asyncHandler } from "../utils/asynchandler.js";
 import { Campaign } from "../models/campaign.model.js";
 import { Submission } from "../models/submission.model.js"
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { deleteCampaignImage, uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/apiresponse.js";
 import { response } from "express";
 import { Hiqmobi } from "../models/hiqmobi.model.js";
 
 const newCampaign = asyncHandler(async(req, res)=>{
-    const {title, payoutRate, trackingUrl, description, stepsToFollow} = req.body
+    const {title, payoutRate, trackingUrl, description, stepsToFollow, provider, campId} = req.body
 
-    if ([title, payoutRate, trackingUrl, description, stepsToFollow].some((field)=>{
+    if ([title, payoutRate, trackingUrl, description, stepsToFollow, provider, campId].some((field)=>{
         field?.trim()===""
     })) {
         console.log("all field required when creating new campaign")
@@ -28,11 +28,14 @@ const newCampaign = asyncHandler(async(req, res)=>{
 
     const campaign = await Campaign.create({
         title,
+        campId,
         payoutRate,
         trackingUrl,
         description,
         stepsToFollow,
-        campaignImage: campaignImage?.url
+        campaignImage: campaignImage?.url,
+        imgPubid: campaignImage.public_id,
+        provider,
     })
 
     const createdCampaign = await Campaign.findById(campaign._id)
@@ -49,9 +52,9 @@ const newCampaign = asyncHandler(async(req, res)=>{
 
 const updateCampaign = asyncHandler(async(req, res)=>{
     const id = req.params.id
-    const {title, payoutRate, trackingUrl, description, stepsToFollow} = req.body
+    const {title, payoutRate, trackingUrl, description, stepsToFollow, provider, campId} = req.body
 
-    if ([title, payoutRate, trackingUrl, stepsToFollow].some(field => field?.toString().trim() === "")) {
+    if ([title, payoutRate, trackingUrl, stepsToFollow, provider].some(field => field?.toString().trim() === "")) {
     return res.status(400).json(new ApiResponse(400, null, "Required fields are missing"));
     }
 
@@ -67,16 +70,24 @@ const updateCampaign = asyncHandler(async(req, res)=>{
         // console.log("campaign Image upload failed");
     }
 
+    if (campaignImage) {
+        const {imgPubid} = await Campaign.findById(id)
+        deleteCampaignImage(imgPubid)
+    }
+
     const campaign = await Campaign.findByIdAndUpdate(
         id,
         {
             $set:{
                 title,
+                campId,
                 payoutRate,
                 trackingUrl,
                 description,
                 stepsToFollow,
                 campaignImage: campaignImage?.url,
+                imgPubid: campaignImage?.public_id,
+                provider,
             }
         },
         {new:true}
@@ -130,19 +141,29 @@ const getCampaignBiId = asyncHandler(async(req, res)=>{
 })
 
 const submitCampaign = asyncHandler(async(req, res)=>{
-    const {phone, upi, cName, redirectUrl, payoutRate} = req.body
+    const {phone, upi, cName, redirectUrl, payoutRate, provider} = req.body
 
-    if ([phone, upi, cName, redirectUrl, payoutRate].some(field => field?.toString().trim() === "")) {
+    if ([phone, upi, cName, redirectUrl, payoutRate, provider].some(field => field?.toString().trim() === "")) {
     return res.status(400).json(new ApiResponse(400, null, "Required fields are missing"));
     }
 
-    let params = new URLSearchParams({
-        p1 : phone,
-        p2 : upi,
-        p3 : cName,
-    })
+    let finalUrl = ""
 
-    const finalUrl = `${redirectUrl}?${params.toString()}`
+    if (provider === "hiqmobi") {
+        let params = new URLSearchParams({
+            p1 : phone,
+            p2 : upi,
+            p3 : cName,
+        })
+    
+        finalUrl = `${redirectUrl}?${params.toString()}`
+    }else if (provider === "sankmo") {
+        let params = new URLSearchParams({
+            subid1 : phone,
+            subid2 : upi,
+        })
+        finalUrl = `${redirectUrl}&${params.toString()}`
+    }
 
     const submission = await Submission.create({
         phone,
@@ -171,6 +192,10 @@ const deleteCampaign = asyncHandler(async(req, res)=>{
     const {id} = req.params
 
     const campaign = await Campaign.findByIdAndDelete(id)
+    
+    if (campaign) {
+        deleteCampaignImage(campaign.imgPubid)
+    }
 
     if (!campaign) {
         return res.status(404)

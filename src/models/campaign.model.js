@@ -12,6 +12,7 @@ const campaignSchema = new Schema(
     },
     campId:{
       type : String,
+      required: true
     },
     trackingUrl: {
       type: String,
@@ -25,6 +26,13 @@ const campaignSchema = new Schema(
     },
     campaignImage: {
       type: String,
+    },
+    imgPubid:{
+      type: String
+    },
+    provider:{
+      type : String,
+
     },
     campaignStatus: {
       type: Boolean,

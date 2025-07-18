@@ -29,4 +29,26 @@ cloudinary.config({
     }
  }
 
- export {uploadOnCloudinary}
+ const getAssetCloudinary =async ()=>{
+    try {
+        const response = await cloudinary.api.resource("sample/mobile-min_yfg0yo")
+        console.log(response)
+    } catch (error) {
+        console.log(error)
+    }
+ }
+
+//  getAssetCloudinary()
+
+ const deleteCampaignImage = async(pub_id)=>{
+    try {
+        const response = await cloudinary.uploader.destroy(pub_id,{
+            resource_type:"image"
+        })
+        console.log("image deleted", response)
+    } catch (error) {
+        console.log(error)
+    }
+ }
+
+ export {uploadOnCloudinary, getAssetCloudinary, deleteCampaignImage}
