@@ -164,6 +164,13 @@ const submitCampaign = asyncHandler(async(req, res)=>{
             subid2 : upi,
         })
         finalUrl = `${redirectUrl}&${params.toString()}`
+    }else if (provider === "icd") {
+        let params = new URLSearchParams({
+            aff_sub1 : phone,
+            aff_sub2 : upi,
+            aff_sub3 : cName,
+        })
+        finalUrl = `${redirectUrl}&${params.toString()}`
     }
 
     const submission = await Submission.create({
