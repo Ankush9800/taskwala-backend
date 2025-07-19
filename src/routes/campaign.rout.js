@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {deleteCampaign, getActiveCampaigns, getallcampaign, getAllSubmission, getCampaignBiId, getHiqmobiConversion, getHiqmobiPostback, getHiqmobiUserPostback, hiqmobiPostBackUrl, newCampaign, submitCampaign, updateCampaign, updateCampaignState } from "../controllers/campaign.con.js";
+import {deleteCampaign, getActiveCampaigns, getallcampaign, getAllSubmission, getCampaignBiId, getHiqmobiConversion, getHiqmobiPostback, getHiqmobiUserPostback, hiqmobiPostBackUrl, indiancampaignPostback, newCampaign, submitCampaign, updateCampaign, updateCampaignState } from "../controllers/campaign.con.js";
 import {upload} from "../middleware/multer.middleware.js"
 
 const router = Router()
@@ -14,6 +14,7 @@ router.route("/getcampaignbyid/:id").get(getCampaignBiId)
 router.route("/getallsubmission").get(getAllSubmission)
 router.route("/gethiqmobidata").get(getHiqmobiConversion)
 router.route("/postback").get(hiqmobiPostBackUrl)
+router.route("/icdpostback").get(indiancampaignPostback)
 router.route("/getpostback").get(getHiqmobiPostback)
 router.route("/userpostback").get(getHiqmobiUserPostback)
 router.route("/activecampaigns").get(getActiveCampaigns)

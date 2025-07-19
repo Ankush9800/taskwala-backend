@@ -5,6 +5,7 @@ import { deleteCampaignImage, uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/apiresponse.js";
 import { response } from "express";
 import { Hiqmobi } from "../models/hiqmobi.model.js";
+import { Icd } from "../models/icd.model.js";
 
 const newCampaign = asyncHandler(async(req, res)=>{
     const {title, payoutRate, trackingUrl, description, stepsToFollow, provider, campId} = req.body
@@ -289,5 +290,27 @@ const getActiveCampaigns = asyncHandler(async(req, res)=>{
     res.status(200).json(campaigns)
 })
 
+const indiancampaignPostback = asyncHandler(async(req, res)=>{
+    const {aff_click_id, offerid, aff_sub1, aff_sub2, aff_sub3, event_name} = req.query
+
+    const conversion = await Icd.create({
+        clickId : aff_click_id,
+        campId : offerid,
+        phoneNo : aff_sub1,
+        upiId : aff_sub2,
+        cName : aff_sub3,
+        goal : event_name
+    })
+
+    const createdConversion =await Icd.findById(conversion._id)
+
+    if (!createdConversion) {
+        console.log("server error while submitting conversion");
+        return res.status(500).json(new ApiResponse(500, null, "server error while submitting conversion"))
+    }
+
+    return res.status(200).json(new ApiResponse(200,createdConversion,"Successfully recovered conversion"))
+})
+
     
-export {newCampaign, updateCampaign, getallcampaign, submitCampaign, deleteCampaign, updateCampaignState, getCampaignBiId, getAllSubmission, getHiqmobiConversion, hiqmobiPostBackUrl, getHiqmobiPostback, getHiqmobiUserPostback, getActiveCampaigns}
+export {newCampaign, updateCampaign, getallcampaign, submitCampaign, deleteCampaign, updateCampaignState, getCampaignBiId, getAllSubmission, getHiqmobiConversion, hiqmobiPostBackUrl, getHiqmobiPostback, getHiqmobiUserPostback, getActiveCampaigns, indiancampaignPostback}
