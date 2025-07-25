@@ -7,6 +7,9 @@ const hiqmobiSchema = new Schema({
     campId:{
         type : String,
     },
+    ip:{
+        type : String,
+    },
     phoneNo:{
         type : String,
     },

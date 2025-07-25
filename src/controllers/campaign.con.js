@@ -241,7 +241,7 @@ const getHiqmobiConversion = asyncHandler(async(req, res)=>{
 
 const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
     
-    const {clickid, campid, p1, p2, p3, payout, goal} = req.query
+    const {clickid, campid,ip, p1, p2, p3, payout, goal} = req.query
     // if ([click_id, camp_id, p1, p2, p3].some(field => field?.toString().trim() === "")) {
     // return res.status(400).json(new ApiResponse(400, null, "Required fields are missing"));
     // }
@@ -249,6 +249,7 @@ const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
     const conversion = await Hiqmobi.create({
         clickId : clickid,
         campId : campid,
+        ip,
         phoneNo : p1,
         upiId : p2,
         cName : p3,
@@ -298,10 +299,9 @@ const getActiveCampaigns = asyncHandler(async(req, res)=>{
 })
 
 const indiancampaignPostback = asyncHandler(async(req, res)=>{
-    const {aff_click_id, offerid, aff_sub1, aff_sub2, aff_sub3, event_name} = req.query
+    const {offerid, aff_sub1, aff_sub2, aff_sub3, event_name} = req.query
 
     const conversion = await Icd.create({
-        clickId : aff_click_id,
         campId : offerid,
         phoneNo : aff_sub1,
         upiId : aff_sub2,
