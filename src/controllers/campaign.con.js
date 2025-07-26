@@ -124,9 +124,7 @@ const updateCampaignState = asyncHandler(async(req, res)=>{
 
 const getallcampaign = asyncHandler(async(req, res)=>{
     const campaigns =await Campaign.find()
-    setTimeout(()=>{
-        res.status(200).json(campaigns)
-    },500)
+    res.status(200).json(campaigns)
 })
 
 const getCampaignBiId = asyncHandler(async(req, res)=>{
