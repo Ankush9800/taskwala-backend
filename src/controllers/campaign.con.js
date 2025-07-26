@@ -272,7 +272,7 @@ const getHiqmobiPostback = asyncHandler(async(req, res)=>{
     const pageLimit = 10
     const page = req.query.page
     const skip = (page-1)* pageLimit
-    const [postback, totalCount] = await Promise.all([Hiqmobi.find().sort({createdAt : -1}).limit(pageLimit).skip(skip), Hiqmobi.countDocuments()])
+    const [postback, totalCount] = await Promise.all([Hiqmobi.find().sort({createdAt : -1}).limit(pageLimit).skip(skip), Hiqmobi.find({payout:{ $gt: 0 }}).countDocuments()])
     return res.status(200).json(new ApiResponse(200,[postback, totalCount],"Successfully recovered all postback"))
 })
 
