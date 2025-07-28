@@ -254,7 +254,9 @@ const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
         goal
     })
 
-    const createdConversion =await Icd.findById(conversion._id)
+    console.log(conversion)
+
+    const createdConversion =await Hiqmobi.findById(conversion._id)
 
     if (!createdConversion) {
         console.log("server error while submitting conversion");
