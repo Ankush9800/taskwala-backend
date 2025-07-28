@@ -254,8 +254,6 @@ const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
         goal
     })
 
-    console.log(conversion)
-
     const createdConversion =await Hiqmobi.findById(conversion._id)
 
     if (!createdConversion) {
