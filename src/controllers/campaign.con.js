@@ -239,11 +239,31 @@ const getHiqmobiConversion = asyncHandler(async(req, res)=>{
 
 const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
     
-    const {clickid, campid,ip, p1, p2, p3, payout, goal} = req.query
+    const {clickid, campid,ip, p1, p2, p3, payout, goal, provider,campId, phoneNo, upiId, cName} = req.query
     // if ([click_id, camp_id, p1, p2, p3].some(field => field?.toString().trim() === "")) {
     // return res.status(400).json(new ApiResponse(400, null, "Required fields are missing"));
     // }
 
+    
+    if (provider.toString() === "icd") {
+        const conversion = await Icd.create({
+        campId,
+        phoneNo,
+        upiId,
+        cName,
+        goal
+    })
+
+    const createdConversion =await Icd.findById(conversion._id)
+
+    if (!createdConversion) {
+        console.log("server error while submitting conversion");
+        return res.status(500).json(new ApiResponse(500, null, "server error while submitting conversion"))
+    }
+
+    return res.status(200).json(new ApiResponse(200,createdConversion,"Successfully recovered conversion"))
+    }else{
+       
     const conversion = await Hiqmobi.create({
         clickId : clickid,
         campId : campid,
@@ -262,7 +282,9 @@ const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
         return res.status(500).json(new ApiResponse(500, null, "server error while submitting conversion"))
     }
 
-    return res.status(200).json(new ApiResponse(200,createdConversion,"Successfully recovered conversion"))
+    return res.status(200).json(new ApiResponse(200,createdConversion,"Successfully recovered conversion")) 
+    }
+
 })
 
 const getHiqmobiPostback = asyncHandler(async(req, res)=>{
