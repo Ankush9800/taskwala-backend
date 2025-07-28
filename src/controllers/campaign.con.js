@@ -246,7 +246,7 @@ const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
 
     
     if (provider.toString() === "icd") {
-        const conversion = await Icd.create({
+        const conversion = await Hiqmobi.create({
         campId,
         phoneNo,
         upiId,
