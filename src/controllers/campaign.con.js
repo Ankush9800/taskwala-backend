@@ -21,7 +21,7 @@ const newCampaign = asyncHandler(async(req, res)=>{
         console.log("campaign Image upload failed")
     }
 
-    const campaignImage = await uploadOnCloudinary(campaignImagePath)
+    const campaignImage = await uploadOnCloudinary(req.file.buffer)
 
     if (!campaignImage) {
         console.log("campaign Image upload failed");
@@ -65,7 +65,7 @@ const updateCampaign = asyncHandler(async(req, res)=>{
         // console.log("campaign Image upload failed")
     }
 
-    const campaignImage = await uploadOnCloudinary(campaignImagePath)
+    const campaignImage = await uploadOnCloudinary(req.file.buffer)
 
     if (!campaignImage) {
         // console.log("campaign Image upload failed");

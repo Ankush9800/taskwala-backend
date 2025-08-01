@@ -12,22 +12,22 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
- const uploadOnCloudinary = async (localFilePath) =>{
-    try {
-        if(!localFilePath) return null
-        const response = await cloudinary.uploader.upload(localFilePath,
-            {
-                resource_type:'auto'
-            }
-        )
-        fs.unlinkSync(localFilePath)
-        return response
-    } catch (error) {
-        console.log("failed toupload")
-        fs.unlinkSync(localFilePath)  //remove the temporary file if operation got failed
-        return null;
-    }
- }
+ const uploadOnCloudinary = async (buffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { resource_type: 'auto' },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary upload error:", error);
+          return reject(error);
+        }
+        resolve(result);
+      }
+    );
+
+    Readable.from(buffer).pipe(stream);
+  });
+};
 
  const getAssetCloudinary =async ()=>{
     try {
