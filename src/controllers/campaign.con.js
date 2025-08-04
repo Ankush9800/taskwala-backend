@@ -59,16 +59,10 @@ const updateCampaign = asyncHandler(async(req, res)=>{
     return res.status(400).json(new ApiResponse(400, null, "Required fields are missing"));
     }
 
+    let campaignImage
 
-    const campaignImagePath = req.file?.path
-    if (!campaignImagePath) {
-        // console.log("campaign Image upload failed")
-    }
-
-    const campaignImage = await uploadOnCloudinary(req.file.buffer)
-
-    if (!campaignImage) {
-        // console.log("campaign Image upload failed");
+    if (req.file?.buffer) {
+        campaignImage = await uploadOnCloudinary(req.file?.buffer)
     }
 
     if (campaignImage) {
