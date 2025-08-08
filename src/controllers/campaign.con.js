@@ -215,21 +215,6 @@ const getAllSubmission = asyncHandler(async(req, res)=>{
     return res.status(200).json(new ApiResponse(200,[submission, totalCount],"Successfully recovered all submission"))
 })
 
-const getHiqmobiConversion = asyncHandler(async(req, res)=>{
-    const page = req.query.page || 1
-
-    const api = `https://api.hiqmobi.com/api/conversion?api_token=15t01kbcjzi35of3ua1j55eilvpkwtboqi6i&page=${page}&limit=10`
-
-    try {
-        const response = await fetch(api)
-        const data = await response.json()
-        return res.status(200).json(data)
-    } catch (error) {
-        console.log(error)
-        return res.status(200).json(error)
-    }
-})
-
 const postbackUrl = asyncHandler(async(req, res)=>{
     
     const {click_id, sub_aff_id, ip, aff_sub1, aff_sub2, aff_sub3, payout, event_token, provider} = req.query
@@ -315,4 +300,4 @@ const indiancampaignPostback = asyncHandler(async(req, res)=>{
 })
 
     
-export {newCampaign, updateCampaign, getallcampaign, submitCampaign, deleteCampaign, updateCampaignState, getCampaignBiId, getAllSubmission, getHiqmobiConversion, postbackUrl, getHiqmobiPostback, getHiqmobiUserPostback, getActiveCampaigns, indiancampaignPostback}
+export {newCampaign, updateCampaign, getallcampaign, submitCampaign, deleteCampaign, updateCampaignState, getCampaignBiId, getAllSubmission, postbackUrl, getHiqmobiPostback, getHiqmobiUserPostback, getActiveCampaigns, indiancampaignPostback}
