@@ -1,6 +1,6 @@
 import mongoose, {Schema} from "mongoose";
 
-const hiqmobiSchema = new Schema({
+const postbackSchema = new Schema({
     clickId:{
         type : String,
     },
@@ -25,6 +25,9 @@ const hiqmobiSchema = new Schema({
     goal:{
         type : String
     },
+    provider:{
+        type :String,
+    }
 },{timestamps : true})
 
-export const Hiqmobi = mongoose.model("Hiqmobi", hiqmobiSchema)
+export const Postback = mongoose.model("Postback", postbackSchema)

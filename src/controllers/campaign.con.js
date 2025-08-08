@@ -4,7 +4,7 @@ import { Submission } from "../models/submission.model.js"
 import { deleteCampaignImage, uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/apiresponse.js";
 import { response } from "express";
-import { Hiqmobi } from "../models/hiqmobi.model.js";
+import { Postback } from "../models/postback.model.js";
 import { Icd } from "../models/icd.model.js";
 
 const newCampaign = asyncHandler(async(req, res)=>{
@@ -148,7 +148,6 @@ const submitCampaign = asyncHandler(async(req, res)=>{
             p2 : upi,
             p3 : cName,
         })
-    
         finalUrl = `${redirectUrl}?${params.toString()}`
     }else if (provider === "sankmo") {
         let params = new URLSearchParams({
@@ -231,45 +230,23 @@ const getHiqmobiConversion = asyncHandler(async(req, res)=>{
     }
 })
 
-const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
+const postbackUrl = asyncHandler(async(req, res)=>{
     
-    const {clickid, campid,ip, p1, p2, p3, payout, goal, provider,campId, phoneNo, upiId, cName} = req.query
-    // if ([click_id, camp_id, p1, p2, p3].some(field => field?.toString().trim() === "")) {
-    // return res.status(400).json(new ApiResponse(400, null, "Required fields are missing"));
-    // }
-
-    
-    if (provider.toString() === "icd") {
-        const conversion = await Hiqmobi.create({
-        campId,
-        phoneNo,
-        upiId,
-        cName,
-        goal
-    })
-
-    const createdConversion =await Hiqmobi.findById(conversion._id)
-
-    if (!createdConversion) {
-        console.log("server error while submitting conversion");
-        return res.status(500).json(new ApiResponse(500, null, "server error while submitting conversion"))
-    }
-
-    return res.status(200).json(new ApiResponse(200,createdConversion,"Successfully recovered conversion"))
-    }else{
+    const {click_id, sub_aff_id, ip, aff_sub1, aff_sub2, aff_sub3, payout, event_token, provider} = req.query
        
-    const conversion = await Hiqmobi.create({
-        clickId : clickid,
-        campId : campid,
-        ip,
-        phoneNo : p1,
-        upiId : p2,
-        cName : p3,
+    const conversion = await Postback.create({
+        clickId : click_id,
+        campId : sub_aff_id,
+        ip : ip,
+        phoneNo : aff_sub1,
+        upiId : aff_sub2,
+        cName : aff_sub3,
         payout : payout,
-        goal
+        goal : event_token,
+        provider,
     })
 
-    const createdConversion =await Hiqmobi.findById(conversion._id)
+    const createdConversion =await Postback.findById(conversion._id)
 
     if (!createdConversion) {
         console.log("server error while submitting conversion");
@@ -277,8 +254,6 @@ const hiqmobiPostBackUrl = asyncHandler(async(req, res)=>{
     }
 
     return res.status(200).json(new ApiResponse(200,createdConversion,"Successfully recovered conversion")) 
-    }
-
 })
 
 const getHiqmobiPostback = asyncHandler(async(req, res)=>{
@@ -334,4 +309,4 @@ const indiancampaignPostback = asyncHandler(async(req, res)=>{
 })
 
     
-export {newCampaign, updateCampaign, getallcampaign, submitCampaign, deleteCampaign, updateCampaignState, getCampaignBiId, getAllSubmission, getHiqmobiConversion, hiqmobiPostBackUrl, getHiqmobiPostback, getHiqmobiUserPostback, getActiveCampaigns, indiancampaignPostback}
+export {newCampaign, updateCampaign, getallcampaign, submitCampaign, deleteCampaign, updateCampaignState, getCampaignBiId, getAllSubmission, getHiqmobiConversion, postbackUrl, getHiqmobiPostback, getHiqmobiUserPostback, getActiveCampaigns, indiancampaignPostback}
