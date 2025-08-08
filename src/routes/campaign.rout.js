@@ -15,7 +15,7 @@ router.route("/getallsubmission").get(getAllSubmission)
 router.route("/postback").get(postbackUrl)
 router.route("/icdpostback").get(indiancampaignPostback)
 router.route("/getpostback").get(getHiqmobiPostback)
-router.route("/getconversion").get(getHiqmobiUserPostback)
+router.route("/userpostback").get(getHiqmobiUserPostback)
 router.route("/activecampaigns").get(getActiveCampaigns)
 
 export default router
