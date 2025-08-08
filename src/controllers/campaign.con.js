@@ -233,6 +233,12 @@ const getHiqmobiConversion = asyncHandler(async(req, res)=>{
 const postbackUrl = asyncHandler(async(req, res)=>{
     
     const {click_id, sub_aff_id, ip, aff_sub1, aff_sub2, aff_sub3, payout, event_token, provider} = req.query
+
+    let updatedPayout = 0
+
+    if (typeof payout === "number") {
+        updatedPayout = payout
+    }
        
     const conversion = await Postback.create({
         clickId : click_id,
@@ -241,7 +247,7 @@ const postbackUrl = asyncHandler(async(req, res)=>{
         phoneNo : aff_sub1,
         upiId : aff_sub2,
         cName : aff_sub3,
-        payout : payout,
+        payout : updatedPayout,
         goal : event_token,
         provider,
     })
