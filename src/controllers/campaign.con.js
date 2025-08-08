@@ -259,7 +259,7 @@ const postbackUrl = asyncHandler(async(req, res)=>{
         return res.status(500).json(new ApiResponse(500, null, "server error while submitting conversion"))
     }
 
-    return res.status(200).json(new ApiResponse(200,createdConversion,"Successfully recovered conversion")) 
+    return res.status(200).json(new ApiResponse(200,createdConversion,"Successfully submitted conversion")) 
 })
 
 const getHiqmobiPostback = asyncHandler(async(req, res)=>{
