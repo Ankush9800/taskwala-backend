@@ -13,13 +13,24 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
         origin: ["http://localhost:5173", "https://offer.twcampaign.in", "https://api.twcampaign.in"],
-        methods: ["GET", "POST"],
+        methods: ["GET", "POST", "OPTIONS"],
         credentials: true,
-        allowedHeaders: ["my-custom-header"],
+        allowedHeaders: ["Content-Type", "Authorization"],
     },
-    transports: ["websocket", "polling"],  // ✅ allow both
-    path: "/socket.io/",                   // ✅ match nginx location
-    pingTimeout: 60000,                    // ✅ handle proxy/network delays
+    allowEIO3: true,
+    transports: ["websocket", "polling"],
+    path: "/socket.io/",
+    pingTimeout: 60000,
+    pingInterval: 25000,
+    upgradeTimeout: 10000,
+    maxHttpBufferSize: 1e8,
+    allowUpgrades: true,
+    perMessageDeflate: {
+        threshold: 2048
+    },
+    httpCompression: {
+        threshold: 2048
+    }
 });
 
 let users = []
