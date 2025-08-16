@@ -14,27 +14,16 @@ app.set('trust proxy', true);
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
-    cors: {
-        origin: ["http://localhost:5173", "https://offer.twcampaign.in"],
-        methods: ["GET", "POST", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-        credentials: true
-    },
-    transports: ["polling", "websocket"], // Try polling first, then upgrade to websocket
-    allowUpgrades: true,
+    transports: ["polling", "websocket"],
     pingTimeout: 60000,
     pingInterval: 25000,
+    path: "/socket.io/",
     cookie: {
         name: "io",
         path: "/",
         httpOnly: true,
         sameSite: "none",
         secure: true
-    },
-    allowRequest: (req, callback) => {
-        // Log headers for debugging
-        console.log("Socket.IO handshake headers:", req.headers);
-        callback(null, true);
     }
 });
 
