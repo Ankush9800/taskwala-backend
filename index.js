@@ -12,9 +12,10 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
     cors: {
-        origin: ["http://localhost:5173","https://offer.twcampaign.in"],
+        origin: ["http://localhost:5173", "https://offer.twcampaign.in", "https://api.twcampaign.in"],
         methods: ["GET", "POST"],
         credentials: true,
+        allowedHeaders: ["my-custom-header"],
     },
     transports: ["websocket", "polling"],  // ✅ allow both
     path: "/socket.io/",                   // ✅ match nginx location
@@ -22,8 +23,14 @@ const io = new Server(httpServer, {
 });
 
 let users = []
+
+// Add error handling for IO server
+io.engine.on("connection_error", (err) => {
+    console.log(`Connection error: ${err.message}, code: ${err.code}, context: ${err.context}`);
+});
+
 io.on("connection",(socket)=>{
-    console.log("a user connected")
+    console.log("a user connected with ID:", socket.id)
     socket.on("register-user",(userData)=>{
         console.log(userData)
         const userIndex = users.findIndex(u=>u.userId === userData.uid)
