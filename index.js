@@ -8,28 +8,33 @@ dotenv.config({
     path : '.env'
 })
 
+// Enable trust proxy if behind Nginx
+app.set('trust proxy', true);
+
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
     cors: {
-        origin: ["http://localhost:5173", "https://offer.twcampaign.in", "https://api.twcampaign.in"],
+        origin: ["http://localhost:5173", "https://offer.twcampaign.in"],
         methods: ["GET", "POST", "OPTIONS"],
-        credentials: true,
         allowedHeaders: ["Content-Type", "Authorization"],
+        credentials: true
     },
-    allowEIO3: true,
-    transports: ["websocket", "polling"],
-    path: "/socket.io/",
+    transports: ["polling", "websocket"], // Try polling first, then upgrade to websocket
+    allowUpgrades: true,
     pingTimeout: 60000,
     pingInterval: 25000,
-    upgradeTimeout: 10000,
-    maxHttpBufferSize: 1e8,
-    allowUpgrades: true,
-    perMessageDeflate: {
-        threshold: 2048
+    cookie: {
+        name: "io",
+        path: "/",
+        httpOnly: true,
+        sameSite: "none",
+        secure: true
     },
-    httpCompression: {
-        threshold: 2048
+    allowRequest: (req, callback) => {
+        // Log headers for debugging
+        console.log("Socket.IO handshake headers:", req.headers);
+        callback(null, true);
     }
 });
 
@@ -40,8 +45,26 @@ io.engine.on("connection_error", (err) => {
     console.log(`Connection error: ${err.message}, code: ${err.code}, context: ${err.context}`);
 });
 
+// Log all socket.io events for debugging
+io.engine.on("headers", (headers, req) => {
+    console.log("Socket.IO Headers:", headers);
+});
+
+io.engine.on("initial_headers", (headers, req) => {
+    console.log("Socket.IO Initial Headers:", headers);
+});
+
 io.on("connection",(socket)=>{
-    console.log("a user connected with ID:", socket.id)
+    console.log("A user connected with ID:", socket.id);
+    
+    // Log connection details
+    console.log("Transport used:", socket.conn.transport.name);
+    console.log("Headers:", socket.handshake.headers);
+    console.log("Query:", socket.handshake.query);
+    
+    socket.conn.on("upgrade", (transport) => {
+        console.log("Transport upgraded from", socket.conn.transport.name, "to", transport.name);
+    });
     socket.on("register-user",(userData)=>{
         console.log(userData)
         const userIndex = users.findIndex(u=>u.userId === userData.uid)
